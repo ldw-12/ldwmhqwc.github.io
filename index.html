@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美化权威查</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            padding-bottom: 70px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .input-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px 0 0 10px;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        button {
+            padding: 15px 25px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 0 10px 10px 0;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        .arrow-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px 0;
+            min-height: 200px;
+        }
+        
+        .arrow {
+            font-size: 15rem;
+            transition: all 0.5s;
+        }
+        
+        .green-arrow {
+            color: #4CAF50;
+        }
+        
+        .red-arrow {
+            color: #f44336;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .message {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-item {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+        
+        .nav-item i {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .nav-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .form-buttons button {
+            flex: 1;
+            border-radius: 10px;
+        }
+        
+        .admin-section {
+            margin-top: 30px;
+        }
+        
+        .blacklist-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .blacklist-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .remove-btn {
+            background: #f44336;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 0.9rem;
+        }
+        
+        .remove-btn:hover {
+            background: #d32f2f;
+        }
+        
+        .admin-btn {
+            background: #ff9800;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .admin-btn:hover {
+            background: #f57c00;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .user-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .logout-btn {
+            background: #f44336;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .logout-btn:hover {
+            background: #d32f2f;
+        }
+        
+        @media (max-width: 600px) {
+            .arrow {
+                font-size: 10rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            input, button {
+                width: 100%;
+                border-radius: 10px;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 首页 -->
+        <div id="home-page" class="page active">
+            <h1>黑名单一键查</h1>
+            <div class="input-section">
+                <div class="input-group">
+                    <input type="text" id="number-input" placeholder="请输入1-50个数字或字母组合">
+                    <button id="check-btn">检测</button>
+                </div>
+                
+                <!-- 箭头容器放在输入区域下方 -->
+                <div class="arrow-container">
+                    <div id="arrow-display"></div>
+                </div>
+                
+                <div id="message" class="message"></div>
+            </div>
+        </div>
+        
+        <!-- 登录页面 -->
+        <div id="login-page" class="page">
+            <h1>登录/注册</h1>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" class="form-input" placeholder="请输入用户名">
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" class="form-input" placeholder="请输入密码">
+                </div>
+                <div class="form-buttons">
+                    <button id="login-btn">登录</button>
+                    <button id="register-btn">注册</button>
+                </div>
+                <button id="admin-login-btn" class="admin-btn">管理员入口</button>
+            </div>
+        </div>
+        
+        <!-- 个人中心页面 -->
+        <div id="profile-page" class="page">
+            <h1>个人中心</h1>
+            <div class="user-info" id="user-info">
+                <!-- 用户信息将在这里显示 -->
+            </div>
+            
+            <div id="admin-section" class="admin-section" style="display: none;">
+                <h2>黑名单管理</h2>
+                <div class="input-section">
+                    <div class="input-group">
+                        <input type="text" id="blacklist-input" placeholder="输入要加入黑名单的数字或字母组合">
+                        <button id="add-blacklist-btn">添加到黑名单</button>
+                    </div>
+                    <p style="text-align: center; margin-top: 10px;">支持1-50个数字或字母组合</p>
+                </div>
+                
+                <div class="blacklist-container">
+                    <h3>当前黑名单</h3>
+                    <div id="blacklist-items">
+                        <!-- 黑名单项目将在这里显示 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航栏 -->
+    <div class="nav-bar">
+        <a href="#" class="nav-item active" data-page="home-page">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="#" class="nav-item" data-page="login-page">
+            <i class="fas fa-user"></i>
+            <span>登录</span>
+        </a>
+        <a href="#" class="nav-item" data-page="profile-page">
+            <i class="fas fa-cog"></i>
+            <span>我</span>
+        </a>
+    </div>
+
+    <script>
+        // 初始化数据
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let blacklist = JSON.parse(localStorage.getItem('blacklist')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+        
+        // DOM元素
+        const homePage = document.getElementById('home-page');
+        const loginPage = document.getElementById('login-page');
+        const profilePage = document.getElementById('profile-page');
+        const navItems = document.querySelectorAll('.nav-item');
+        const checkBtn = document.getElementById('check-btn');
+        const numberInput = document.getElementById('number-input');
+        const arrowDisplay = document.getElementById('arrow-display');
+        const message = document.getElementById('message');
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const adminLoginBtn = document.getElementById('admin-login-btn');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const userInfo = document.getElementById('user-info');
+        const adminSection = document.getElementById('admin-section');
+        const addBlacklistBtn = document.getElementById('add-blacklist-btn');
+        const blacklistInput = document.getElementById('blacklist-input');
+        const blacklistItems = document.getElementById('blacklist-items');
+        
+        // 页面导航
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                
+                // 更新导航栏状态
+                navItems.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                
+                // 显示对应页面
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                document.getElementById(pageId).classList.add('active');
+                
+                // 如果进入个人中心页面，更新用户信息
+                if (pageId === 'profile-page') {
+                    updateUserInfo();
+                }
+            });
+        });
+        
+        // 检查数字或字母组合
+        checkBtn.addEventListener('click', function() {
+            const input = numberInput.value.trim();
+            
+            if (!input) {
+                showMessage('请输入数字或字母组合', 'error');
+                return;
+            }
+            
+            if (input.length < 1 || input.length > 50) {
+                showMessage('请输入1-50个字符', 'error');
+                return;
+            }
+            
+            // 检查是否在黑名单中
+            if (blacklist.includes(input)) {
+                showArrow('red', '您已在黑名单中');
+            } else {
+                showArrow('green', '您未进入黑名单');
+            }
+        });
+        
+        // 显示箭头
+        function showArrow(color, text) {
+            arrowDisplay.innerHTML = '';
+            message.textContent = text;
+            
+            const arrow = document.createElement('div');
+            arrow.className = `arrow ${color}-arrow`;
+            arrow.innerHTML = color === 'green' ? '↑' : '↓';
+            
+            arrowDisplay.appendChild(arrow);
+        }
+        
+        // 显示消息
+        function showMessage(text, type) {
+            message.textContent = text;
+            message.style.color = type === 'error' ? '#ff6b6b' : 'white';
+        }
+        
+        // 登录
+        loginBtn.addEventListener('click', function() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            if (!username || !password) {
+                alert('请输入用户名和密码');
+                return;
+            }
+            
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                alert('登录成功！');
+                updateUserInfo();
+                
+                // 切换到个人中心页面
+                navItems.forEach(nav => nav.classList.remove('active'));
+                document.querySelector('[data-page="profile-page"]').classList.add('active');
+                document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+                profilePage.classList.add('active');
+            } else {
+                alert('用户名或密码错误');
+            }
+        });
+        
+        // 注册
+        registerBtn.addEventListener('click', function() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            if (!username || !password) {
+                alert('请输入用户名和密码');
+                return;
+            }
+            
+            if (users.find(u => u.username === username)) {
+                alert('用户名已存在');
+                return;
+            }
+            
+            users.push({ username, password });
+            localStorage.setItem('users', JSON.stringify(users));
+            alert('注册成功！');
+        });
+        
+        // 管理员登录
+        adminLoginBtn.addEventListener('click', function() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            if (username === 'ldwqw' && password === '6945531+9') {
+                currentUser = { username: 'ldwqw', isAdmin: true };
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                alert('管理员登录成功！');
+                updateUserInfo();
+                
+                // 切换到个人中心页面
+                navItems.forEach(nav => nav.classList.remove('active'));
+                document.querySelector('[data-page="profile-page"]').classList.add('active');
+                document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+                profilePage.classList.add('active');
+            } else {
+                alert('管理员账号或密码错误');
+            }
+        });
+        
+        // 更新用户信息
+        function updateUserInfo() {
+            if (currentUser) {
+                userInfo.innerHTML = `
+                    <h3>欢迎, ${currentUser.username}</h3>
+                    <p>${currentUser.isAdmin ? '管理员' : '普通用户'}</p>
+                    <button class="logout-btn" id="logout-btn">退出登录</button>
+                `;
+                
+                if (currentUser.isAdmin) {
+                    adminSection.style.display = 'block';
+                    updateBlacklistDisplay();
+                } else {
+                    adminSection.style.display = 'none';
+                }
+                
+                // 添加退出登录事件
+                document.getElementById('logout-btn').addEventListener('click', function() {
+                    currentUser = null;
+                    localStorage.removeItem('currentUser');
+                    updateUserInfo();
+                    alert('已退出登录');
+                });
+            } else {
+                userInfo.innerHTML = '<p>请先登录</p>';
+                adminSection.style.display = 'none';
+            }
+        }
+        
+        // 添加到黑名单
+        addBlacklistBtn.addEventListener('click', function() {
+            if (!currentUser || !currentUser.isAdmin) {
+                alert('只有管理员可以管理黑名单');
+                return;
+            }
+            
+            const input = blacklistInput.value.trim();
+            
+            if (!input) {
+                alert('请输入数字或字母组合');
+                return;
+            }
+            
+            if (input.length < 1 || input.length > 50) {
+                alert('请输入1-50个字符');
+                return;
+            }
+            
+            if (blacklist.includes(input)) {
+                alert('该组合已在黑名单中');
+                return;
+            }
+            
+            blacklist.push(input);
+            localStorage.setItem('blacklist', JSON.stringify(blacklist));
+            updateBlacklistDisplay();
+            blacklistInput.value = '';
+            alert('已添加到黑名单');
+        });
+        
+        // 更新黑名单显示
+        function updateBlacklistDisplay() {
+            blacklistItems.innerHTML = '';
+            
+            if (blacklist.length === 0) {
+                blacklistItems.innerHTML = '<p>黑名单为空</p>';
+                return;
+            }
+            
+            blacklist.forEach(item => {
+                const listItem = document.createElement('div');
+                listItem.className = 'blacklist-item';
+                listItem.innerHTML = `
+                    <span>${item}</span>
+                    <button class="remove-btn" data-item="${item}">移除</button>
+                `;
+                blacklistItems.appendChild(listItem);
+            });
+            
+            // 添加移除事件
+            document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const item = this.getAttribute('data-item');
+                    blacklist = blacklist.filter(n => n !== item);
+                    localStorage.setItem('blacklist', JSON.stringify(blacklist));
+                    updateBlacklistDisplay();
+                });
+            });
+        }
+        
+        // 初始化
+        updateUserInfo();
+        
+        // 添加示例数据以便测试
+        if (blacklist.length === 0) {
+            blacklist = ['123', 'abc', 'test123', 'hello', 'admin'];
+            localStorage.setItem('blacklist', JSON.stringify(blacklist));
+        }
+    </script>
+</body>
+</html>
